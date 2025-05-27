@@ -26,22 +26,25 @@ class PendingPaymentsTab extends StatelessWidget {
         children: [
           _buildSearchField(context),
           _buildActionButtons(context),
-          controller.ventasPendientes.isEmpty
-              ? const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(32.0),
-                  child: Text(
-                    'No hay pagos pendientes',
-                    style: TextStyle(fontSize: 16),
-                  ),
+
+          // Mostramos el mensaje de "No hay pagos pendientes" pero mantenemos los botones visibles
+          if (controller.ventasPendientes.isEmpty)
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.all(32.0),
+                child: Text(
+                  'No hay pagos pendientes',
+                  style: TextStyle(fontSize: 16),
                 ),
-              )
-              : Column(
-                children: [
-                  _buildPendingPaymentsTableHeader(context),
-                  _buildPendingPaymentsTable(context),
-                ],
               ),
+            )
+          else
+            Column(
+              children: [
+                _buildPendingPaymentsTableHeader(context),
+                _buildPendingPaymentsTable(context),
+              ],
+            ),
           const SizedBox(height: 32),
         ],
       ),

@@ -81,20 +81,28 @@ class Pago {
 
 // Modelo principal de venta
 class VentaModel {
+  //este id se obtinee de firebase, al momentoo de crear la venta no se le asigna
   final String id;
+  // son los libros que se vendieron
   final List<ItemVenta> items;
+  // fecha en que se realizó la venta
   final DateTime fechaVenta;
   final double subtotal;
+  // este tendra el valor del descuento aplicado, por ejemplo 10% de 100, seria 10, siempre seria descuentso de 30% para abajo,
   final double descuento;
   final double total;
 
   // Información del cliente
+  //la informacion del cliente solo se toma si es pago a plazos
+  final bool esPagoAPlazo;
   final String? nombreCliente;
   final String? telefonoCliente;
+  // es proveedor solo es un parametro para saber si es venta a mayorista o no, en la vista lo mostraremos como es mayorista?
   final bool esProveedor;
 
   // Información de pago
-  final bool esPagoAPlazo;
+
+  // es pago a plazos solo se toma si es pago a plazos
   final List<Pago> pagos;
   final double? montoInicial;
   final String? comprobanteInicial; // URL de la imagen del comprobante inicial
@@ -107,7 +115,7 @@ class VentaModel {
   final String? evidenciaEnvio; // URL de la imagen del comprobante de envío
 
   // Información administrativa
-  final String vendedor; // Nombre o ID del vendedor
+  final String vendedor; //ID del vendedor
   final String? sucursal; // Ubicación o sucursal donde se realizó la venta
   final String estado; // "Completada", "Pendiente", "Cancelada"
   final String? notas; // Notas adicionales sobre la venta

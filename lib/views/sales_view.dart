@@ -65,29 +65,34 @@ class _SalesViewState extends State<SalesView>
           ],
         ),
       ),
-      body:
-          _controller.isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : _controller.errorMessage.isNotEmpty
-              ? _buildErrorWidget()
-              : _buildSalesContent(),
-    );
-  }
-
-  Widget _buildErrorWidget() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/new-sale');
+        },
+        tooltip: 'Nueva Venta',
+        child: const Icon(Icons.add),
+      ),
+      body: Column(
         children: [
-          Text(
-            _controller.errorMessage,
-            style: const TextStyle(color: Colors.red),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () => _controller.loadVentas(setState),
-            child: const Text('Intentar nuevamente'),
+          // Mostrar mensaje de error si existe, pero siempre mostrar el contenido
+          // if (_controller.errorMessage.isNotEmpty)
+          //   Container(
+          //     color: Colors.red.shade100,
+          //     width: double.infinity,
+          //     padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          //     child: Text(
+          //       _controller.errorMessage,
+          //       style: const TextStyle(color: Colors.red),
+          //       textAlign: TextAlign.center,
+          //     ),
+          //   ),
+
+          // Mostrar indicador de carga o contenido principal
+          Expanded(
+            child:
+                _controller.isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : _buildSalesContent(),
           ),
         ],
       ),

@@ -110,4 +110,12 @@ class AuthService extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<String> getCurrentUser() async {
+    if (_currentUser != null) {
+      return _currentUser!.username;
+    } else {
+      return 'Invitado';
+    }
+  }
 }

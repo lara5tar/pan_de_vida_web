@@ -22,28 +22,32 @@ class SalesByDayTab extends StatelessWidget {
         children: [
           _buildDateSelector(context),
           _buildActionButtons(context),
-          controller.filteredVentas.isEmpty
-              ? Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(32.0),
-                  child:
-                      controller.selectedDate == null
-                          ? const Text(
-                            'Seleccione una fecha para ver las ventas',
-                            style: TextStyle(fontSize: 16),
-                          )
-                          : const Text(
-                            'No hay ventas para la fecha seleccionada',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                ),
-              )
-              : Column(
-                children: [
-                  _buildSalesTableHeader(context),
-                  _buildSalesTable(context),
-                ],
+
+          // Mostramos el mensaje de "No hay ventas" pero mantenemos los botones visibles
+          if (controller.filteredVentas.isEmpty)
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(32.0),
+                child:
+                    controller.selectedDate == null
+                        ? const Text(
+                          'Seleccione una fecha para ver las ventas',
+                          style: TextStyle(fontSize: 16),
+                        )
+                        : const Text(
+                          'No hay ventas para la fecha seleccionada',
+                          style: TextStyle(fontSize: 16),
+                        ),
               ),
+            )
+          else
+            Column(
+              children: [
+                _buildSalesTableHeader(context),
+                _buildSalesTable(context),
+              ],
+            ),
+
           const SizedBox(height: 32),
         ],
       ),
@@ -151,7 +155,15 @@ class SalesByDayTab extends StatelessWidget {
               const SizedBox(width: 20),
               Expanded(
                 child: ElevatedButton.icon(
-                  onPressed: () => controller.loadVentas(setState),
+                  // Aquí utilizamos directamente filterVentas si hay fecha seleccionada
+                  // para aprovechar el método optimizado, o loadVentas si no hay fecha
+                  onPressed: () {
+                    if (controller.selectedDate != null) {
+                      controller.filterVentas(setState);
+                    } else {
+                      controller.loadVentas(setState);
+                    }
+                  },
                   icon: const Icon(Icons.refresh, size: 28),
                   label: const Text(
                     'ACTUALIZAR VENTAS',

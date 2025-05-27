@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../services/auth_service.dart';
 import '../../views/inventory_view.dart';
+import '../../views/sale/add_sale_view.dart';
 import '../../views/sales_view.dart';
-import 'app_drawer.dart';
+import 'sidebar_menu.dart'; // Cambiamos app_drawer.dart por sidebar_menu.dart
 
 /// Componente principal que contiene el scaffold básico para todas las vistas.
 class MainScaffold extends StatefulWidget {
@@ -19,7 +20,11 @@ class _MainScaffoldState extends State<MainScaffold> {
   int _selectedIndex = 0; // 0 = Inventario
 
   // Lista de las vistas disponibles para navegar
-  final List<Widget> _pages = [const InventoryView(), const SalesView()];
+  final List<Widget> _pages = [
+    const InventoryView(),
+    const SalesView(),
+    const AddSaleView(), // Agregar AddSaleView a la lista
+  ];
 
   @override
   void initState() {
@@ -27,10 +32,12 @@ class _MainScaffoldState extends State<MainScaffold> {
     // Determinar el índice inicial basado en el widget hijo
     if (widget.child is SalesView) {
       _selectedIndex = 1;
+    } else if (widget.child is AddSaleView) {
+      _selectedIndex = 2; // Actualizar el índice para AddSaleView
     }
   }
 
-  /// Actualiza el índice seleccionado y cierra el drawer
+  /// Actualiza el índice seleccionado
   void _onItemSelected(int index) {
     setState(() {
       _selectedIndex = index;
@@ -50,20 +57,35 @@ class _MainScaffoldState extends State<MainScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    // Reducir el ancho del sidebar a la mitad (de 20% a 10%)
+    final double sidebarWidth = MediaQuery.of(context).size.width * 0.1;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Pan de Vida',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        actions: [_buildLogoutButton(context)],
+      // appBar: AppBar(
+      //   title: const Text(
+      //     'Pan de Vida',
+      //     style: TextStyle(fontWeight: FontWeight.bold),
+      //   ),
+      //   actions: [_buildLogoutButton(context)],
+      // ),
+      // Ya no usamos drawer, ahora el body es un Row con sidebar y contenido
+      body: Row(
+        children: [
+          // Sidebar menu a la izquierda
+          SizedBox(
+            width: sidebarWidth,
+            child: SidebarMenu(
+              currentPage: widget.child,
+              onNavigate: _navigateToView,
+              selectedIndex: _selectedIndex,
+            ),
+          ),
+          // Línea divisoria vertical
+          const VerticalDivider(width: 1, thickness: 1),
+          // Contenido principal a la derecha
+          Expanded(child: widget.child),
+        ],
       ),
-      drawer: AppDrawer(
-        currentPage: widget.child,
-        onNavigate: _navigateToView,
-        selectedIndex: _selectedIndex,
-      ),
-      body: widget.child,
     );
   }
 

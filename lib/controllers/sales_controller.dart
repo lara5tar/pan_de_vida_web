@@ -118,7 +118,7 @@ class SalesController {
   }
 
   // Filtrar ventas por fecha seleccionada
-  void filterVentas(Function setState) {
+  Future<void> filterVentas(Function setState) async {
     setState(() {
       isLoading = true;
     });
@@ -132,33 +132,30 @@ class SalesController {
       return;
     }
 
-    final startOfDay = DateTime(
-      selectedDate!.year,
-      selectedDate!.month,
-      selectedDate!.day,
-      0,
-      0,
-      0,
-    );
-    final endOfDay = DateTime(
-      selectedDate!.year,
-      selectedDate!.month,
-      selectedDate!.day,
-      23,
-      59,
-      59,
-    );
+    try {
+      // Usar el método optimizado findByDate que utiliza una consulta directa en Firestore
+      final result = await _ventasService.findByDate(selectedDate!);
 
-    // Filtrar por fecha
-    filteredVentas =
-        ventas.where((venta) {
-          final ventaDate = venta.fechaVenta;
-          return ventaDate.isAfter(startOfDay) && ventaDate.isBefore(endOfDay);
-        }).toList();
-
-    setState(() {
-      isLoading = false;
-    });
+      if (result['error']) {
+        setState(() {
+          errorMessage =
+              result['message'] ?? 'Error al filtrar las ventas por fecha';
+          filteredVentas = [];
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          filteredVentas = result['data'];
+          isLoading = false;
+          errorMessage = '';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        errorMessage = 'Error al filtrar ventas por fecha: ${e.toString()}';
+        isLoading = false;
+      });
+    }
   }
 
   // Cambiar la fecha seleccionada

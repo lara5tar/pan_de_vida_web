@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'views/inventory_view.dart';
+import 'views/sale/add_sale_view.dart';
 import 'views/sales_view.dart';
 import 'views/auth_guard.dart';
 import 'services/auth_service.dart';
 import 'views/login_view.dart';
+import 'views/welcome_view.dart';
 import 'components/app/main_scaffold.dart';
 
 void main() {
@@ -32,13 +34,16 @@ class MyApp extends StatelessWidget {
       routes: {
         '/':
             (context) =>
-                const AuthGuard(child: MainScaffold(child: InventoryView())),
+                const AuthGuard(child: MainScaffold(child: WelcomeView())),
         '/home':
             (context) =>
                 const AuthGuard(child: MainScaffold(child: InventoryView())),
         '/sales':
             (context) =>
                 const AuthGuard(child: MainScaffold(child: SalesView())),
+        '/new-sale':
+            (context) =>
+                const AuthGuard(child: MainScaffold(child: AddSaleView())),
         '/login': (context) => const LoginView(),
       },
     );

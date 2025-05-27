@@ -137,6 +137,45 @@ class VentasService {
       // Convertir la fecha a formato ISO para comparar solo el día
       String fechaISO = fecha.toIso8601String().split('T')[0];
 
+      // Usar queryByFieldFormatted para buscar directamente en Firestore
+      // Como Firestore almacena fechaVenta como string ISO 8601, buscamos por el prefijo del día
+      List<Map<String, dynamic>>
+      result = await fireProvider.queryByFieldFormatted(
+        field: 'fechaVenta',
+        // Usamos el prefijo del día, para que coincida con cualquier hora de ese día
+        value: fechaISO,
+      );
+
+      // Si no se encontraron resultados con el método optimizado, usar el método alternativo
+      if (result.isEmpty) {
+        return await _findByDateAlternative(fecha);
+      }
+
+      // Convertir los documentos a objetos VentaModel
+      List<VentaModel> ventasFiltradas =
+          result.map((doc) => VentaModel.fromJson(doc)).toList();
+
+      if (ventasFiltradas.isEmpty) {
+        return {
+          'error': true,
+          'message':
+              'No se encontraron ventas para la fecha: ${fecha.toString().split(' ')[0]}',
+        };
+      }
+
+      return {'error': false, 'data': ventasFiltradas};
+    } catch (e) {
+      // Si hay un error, usamos el método alternativo
+      return await _findByDateAlternative(fecha);
+    }
+  }
+
+  // Método alternativo que usa getAll y filtra localmente (el método original)
+  Future<Map<String, dynamic>> _findByDateAlternative(DateTime fecha) async {
+    try {
+      // Convertir la fecha a formato ISO para comparar solo el día
+      String fechaISO = fecha.toIso8601String().split('T')[0];
+
       // Obtenemos todas las ventas y luego filtramos por fecha
       final allVentasResult = await getAll();
 
