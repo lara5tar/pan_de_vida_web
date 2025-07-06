@@ -434,11 +434,6 @@ class VentasService {
       final List<Map<String, dynamic>> result = await fireProvider
           .queryByFieldFormatted(field: 'esEnvio', value: 'true');
 
-      // Si no se encontraron resultados, usar el método alternativo
-      if (result.isEmpty) {
-        return await _getVentasConEnvioAlternative();
-      }
-
       // Convertir los documentos a objetos VentaModel
       List<VentaModel> ventasConEnvio = [];
 
@@ -449,31 +444,6 @@ class VentasService {
       return {'error': false, 'data': ventasConEnvio};
     } catch (e) {
       // Si hay un error, usamos el método alternativo
-      return await _getVentasConEnvioAlternative();
-    }
-  }
-
-  // Método alternativo que usa getAll y filtra localmente
-  Future<Map<String, dynamic>> _getVentasConEnvioAlternative() async {
-    try {
-      final allVentasResult = await getAll();
-
-      if (allVentasResult['error'] == true) {
-        return allVentasResult as Map<String, dynamic>;
-      }
-
-      final List<VentaModel> allVentas = allVentasResult['data'];
-
-      // Filtrar solo las ventas que tienen envío
-      final List<VentaModel> ventasConEnvio =
-          allVentas.where((venta) => venta.esEnvio).toList();
-
-      if (ventasConEnvio.isEmpty) {
-        return {'error': true, 'message': 'No se encontraron ventas con envío'};
-      }
-
-      return {'error': false, 'data': ventasConEnvio};
-    } catch (e) {
       return {
         'error': true,
         'message': 'Error al buscar ventas con envío: ${e.toString()}',

@@ -99,7 +99,7 @@ class SidebarMenu extends StatelessWidget {
               MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: Image.asset(
-                  'pandevida_logo.png',
+                  'assets/pandevida_logo.png',
                   height: 150,
                   // Ya no usamos el icono de libro como fallback, en su lugar mostramos
                   // un contenedor con el nombre cuando la imagen no carga
