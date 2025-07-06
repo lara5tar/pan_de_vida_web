@@ -1,0 +1,73 @@
+{
+    "name": "Flutter Android & Web Development",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "options": [
+            "--tag",
+            "flutter-dev"
+        ],
+        "args": {
+            "USERNAME": "vscode"
+        }
+    },
+    "containerEnv": {
+        "SHELL": "/bin/bash"
+    },
+    "mounts": [
+        "source=${localWorkspaceFolder}/.devcontainer/.bashrc,target=/home/vscode/.bashrc.1,readonly,type=bind"
+    ],
+    "runArgs": [
+        "--platform",
+        "linux/amd64"
+    ],
+    "onCreateCommand": "bash ./.devcontainer/on-create.sh",
+    "postAttachCommand": "bash ./.devcontainer/post-attach.sh",
+    "waitFor": "postStartCommand",
+    "remoteUser": "vscode",
+    // Configuración de puertos para debugging
+    "forwardPorts": [
+        3000, // Web development server
+        8080, // Alternative web port
+        5000, // Flutter web default
+        8000 // Alternative port
+    ],
+    "portsAttributes": {
+        "3000": {
+            "label": "Flutter Web",
+            "onAutoForward": "notify"
+        },
+        "8080": {
+            "label": "Alternative Web Port",
+            "onAutoForward": "silent"
+        }
+    },
+    "features": {
+        "ghcr.io/devcontainers-extra/features/starship": {},
+        "ghcr.io/devcontainers-extra/features/go-task:1": {},
+        "ghcr.io/devcontainers/features/github-cli:1": {}
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "Dart-Code.dart-code",
+                "Dart-Code.flutter",
+                "task.vscode-task",
+                "redhat.vscode-yaml",
+                "ms-vscode.vscode-json",
+                "GitHub.copilot",
+                "GitHub.copilot-chat",
+                "bradlc.vscode-tailwindcss",
+                "formulahendry.auto-rename-tag",
+                "ms-vscode.live-server"
+            ],
+            "settings": {
+                "dart.debugExternalLibraries": true,
+                "dart.debugSdkLibraries": true,
+                "dart.enableSdkFormatter": true,
+                "dart.lineLength": 100,
+                "flutter.hot-reload-on-save": true,
+                "flutter.debugMode": true
+            }
+        }
+    }
+}

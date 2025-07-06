@@ -1,0 +1,28 @@
+{
+    "dart.flutterSdkPath": "/home/vscode/flutter",
+    "dart.debugExternalLibraries": true,
+    "dart.debugSdkLibraries": true,
+    "dart.enableSdkFormatter": true,
+    "dart.lineLength": 100,
+    "flutter.hot-reload-on-save": true,
+    "flutter.debugMode": true,
+    "dart.flutterHotReloadOnSave": "always",
+    "dart.previewFlutterUiGuides": true,
+    "dart.previewFlutterUiGuidesCustomTracking": true,
+    "editor.rulers": [
+        100
+    ],
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": true
+    },
+    "files.associations": {
+        "*.dart": "dart"
+    },
+    "terminal.integrated.defaultProfile.linux": "bash",
+    "terminal.integrated.profiles.linux": {
+        "bash": {
+            "path": "/bin/bash"
+        }
+    }
+}
