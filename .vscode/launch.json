@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Flutter Web (Debug)",
+            "name": "Flutter Web (Codespaces)",
             "type": "dart",
             "request": "launch",
             "program": "lib/main.dart",
@@ -14,7 +14,10 @@
                 "--web-hostname",
                 "0.0.0.0"
             ],
-            "flutterMode": "debug"
+            "flutterMode": "debug",
+            "env": {
+                "CHROME_EXECUTABLE": "/usr/bin/chromium-browser"
+            }
         },
         {
             "name": "Flutter Web (Chrome)",
@@ -27,10 +30,14 @@
                 "--web-port",
                 "3000"
             ],
-            "flutterMode": "debug"
+            "flutterMode": "debug",
+            "env": {
+                "CHROME_EXECUTABLE": "/usr/bin/chromium-browser",
+                "DISPLAY": ":99"
+            }
         },
         {
-            "name": "Flutter Android",
+            "name": "Flutter Android (Codespaces)",
             "type": "dart",
             "request": "launch",
             "program": "lib/main.dart",
@@ -39,36 +46,6 @@
                 "android"
             ],
             "flutterMode": "debug"
-        },
-        {
-            "name": "Flutter Web (Release)",
-            "type": "dart",
-            "request": "launch",
-            "program": "lib/main.dart",
-            "args": [
-                "-d",
-                "web-server",
-                "--web-port",
-                "3000",
-                "--web-hostname",
-                "0.0.0.0"
-            ],
-            "flutterMode": "release"
-        },
-        {
-            "name": "Flutter Web (Profile)",
-            "type": "dart",
-            "request": "launch",
-            "program": "lib/main.dart",
-            "args": [
-                "-d",
-                "web-server",
-                "--web-port",
-                "3000",
-                "--web-hostname",
-                "0.0.0.0"
-            ],
-            "flutterMode": "profile"
         }
     ]
 }

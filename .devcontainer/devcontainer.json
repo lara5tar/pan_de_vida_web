@@ -1,72 +1,50 @@
 {
-    "name": "Flutter Android & Web Development",
-    "build": {
-        "dockerfile": "Dockerfile",
-        "options": [
-            "--tag",
-            "flutter-dev"
-        ],
-        "args": {
-            "USERNAME": "vscode"
-        }
-    },
+    "name": "Flutter for GitHub Codespaces",
+    "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
     "containerEnv": {
-        "SHELL": "/bin/bash"
+        "ANDROID_SDK_ROOT": "/home/vscode/android-sdk",
+        "FLUTTER_ROOT": "/home/vscode/flutter",
+        "PATH": "${PATH}:/home/vscode/flutter/bin:/home/vscode/android-sdk/cmdline-tools/latest/bin:/home/vscode/android-sdk/platform-tools",
+        "CHROME_EXECUTABLE": "/usr/bin/chromium-browser",
+        "DISPLAY": ":99"
     },
-    "mounts": [
-        "source=${localWorkspaceFolder}/.devcontainer/.bashrc,target=/home/vscode/.bashrc.1,readonly,type=bind"
-    ],
-    "runArgs": [
-        "--platform",
-        "linux/amd64"
-    ],
-    "onCreateCommand": "bash ./.devcontainer/on-create.sh",
-    "postAttachCommand": "bash ./.devcontainer/post-attach.sh",
-    "waitFor": "postStartCommand",
     "remoteUser": "vscode",
-    // Configuración de puertos para debugging
+    "onCreateCommand": "bash .devcontainer/on-create.sh",
+    "postCreateCommand": "bash .devcontainer/post-create.sh",
     "forwardPorts": [
-        3000, // Web development server
-        8080, // Alternative web port
-        5000, // Flutter web default
-        8000 // Alternative port
+        3000,
+        8080,
+        5000
     ],
     "portsAttributes": {
         "3000": {
-            "label": "Flutter Web",
+            "label": "Flutter Web App",
             "onAutoForward": "notify"
-        },
-        "8080": {
-            "label": "Alternative Web Port",
-            "onAutoForward": "silent"
         }
     },
     "features": {
-        "ghcr.io/devcontainers-extra/features/starship": {},
-        "ghcr.io/devcontainers-extra/features/go-task:1": {},
-        "ghcr.io/devcontainers/features/github-cli:1": {}
+        "ghcr.io/devcontainers/features/git:1": {},
+        "ghcr.io/devcontainers/features/github-cli:1": {},
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "18"
+        }
     },
     "customizations": {
         "vscode": {
             "extensions": [
                 "Dart-Code.dart-code",
                 "Dart-Code.flutter",
-                "task.vscode-task",
-                "redhat.vscode-yaml",
                 "ms-vscode.vscode-json",
-                "GitHub.copilot",
-                "GitHub.copilot-chat",
                 "bradlc.vscode-tailwindcss",
-                "formulahendry.auto-rename-tag",
-                "ms-vscode.live-server"
+                "GitHub.copilot"
             ],
             "settings": {
+                "dart.flutterSdkPath": "/home/vscode/flutter",
                 "dart.debugExternalLibraries": true,
                 "dart.debugSdkLibraries": true,
-                "dart.enableSdkFormatter": true,
-                "dart.lineLength": 100,
                 "flutter.hot-reload-on-save": true,
-                "flutter.debugMode": true
+                "dart.lineLength": 100,
+                "editor.formatOnSave": true
             }
         }
     }

@@ -1,49 +1,70 @@
 #!/bin/bash
 set -e
 
-# Disable analytics
-dart --disable-analytics
-flutter --disable-analytics
+echo "🚀 Configurando Flutter para GitHub Codespaces..."
 
-# Enable web and configure Flutter for Codespaces
-flutter config --enable-web
-flutter config --no-enable-linux-desktop
-flutter config --no-enable-macos-desktop
-flutter config --no-enable-windows-desktop
+# Actualizar paquetes del sistema
+sudo apt-get update
 
-# Set Chrome executable for web debugging
-flutter config --web-browser-flag "--disable-web-security"
-flutter config --web-browser-flag "--disable-features=VizDisplayCompositor"
+# Instalar dependencias necesarias
+sudo apt-get install -y \
+    curl \
+    git \
+    unzip \
+    xz-utils \
+    zip \
+    libglu1-mesa \
+    openjdk-11-jdk \
+    wget \
+    chromium-browser \
+    xvfb
 
-# Run flutter doctor to check setup
-flutter doctor
+# Crear directorios
+mkdir -p /home/vscode/android-sdk
+mkdir -p /home/vscode/flutter
 
-# Configure bashrc
-echo '' >> $HOME/.bashrc
-echo 'eval -- "$(/usr/local/bin/starship init bash --print-full-init)"' >> $HOME/.bashrc
-echo '' >> $HOME/.bashrc
-echo 'source ~/.bashrc.1' >> $HOME/.bashrc
+# Descargar e instalar Flutter
+echo "📱 Instalando Flutter..."
+cd /home/vscode
+wget -O flutter.tar.xz https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.24.3-stable.tar.xz
+tar xf flutter.tar.xz
+rm flutter.tar.xz
 
-# Set up environment for web development
-echo 'export CHROME_EXECUTABLE=/usr/bin/chromium' >> $HOME/.bashrc
-echo 'export DISPLAY=:99' >> $HOME/.bashrc
+# Descargar e instalar Android SDK
+echo "🤖 Instalando Android SDK..."
+cd /home/vscode/android-sdk
+wget -O cmdline-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+unzip cmdline-tools.zip
+mkdir -p cmdline-tools/latest
+mv cmdline-tools/cmdline-tools/* cmdline-tools/latest/
+rm -rf cmdline-tools.zip
 
-# Start virtual display for web debugging
-export TERM=xterm-256color
+# Configurar PATH
+echo 'export PATH="$PATH:/home/vscode/flutter/bin:/home/vscode/android-sdk/cmdline-tools/latest/bin:/home/vscode/android-sdk/platform-tools"' >> /home/vscode/.bashrc
+echo 'export ANDROID_SDK_ROOT="/home/vscode/android-sdk"' >> /home/vscode/.bashrc
+echo 'export CHROME_EXECUTABLE="/usr/bin/chromium-browser"' >> /home/vscode/.bashrc
 
-# Run onboarding if task command exists
-if command -v task &> /dev/null; then
-    task onboarding | while IFS= read -r line; do
-      # Loop over each character in the current line.
-      for (( i=0; i<${#line}; i++ )); do
-        echo -n "${line:$i:1}"
-        sleep 0.003
-      done
-      # Print a newline after finishing the line.
-      echo
-    done
-fi
+# Aplicar variables de entorno
+export PATH="$PATH:/home/vscode/flutter/bin:/home/vscode/android-sdk/cmdline-tools/latest/bin:/home/vscode/android-sdk/platform-tools"
+export ANDROID_SDK_ROOT="/home/vscode/android-sdk"
+export CHROME_EXECUTABLE="/usr/bin/chromium-browser"
 
-echo "✅ Flutter development environment configured for Android and Web debugging!"
-echo "🌐 Web debugging is enabled with Chromium"
-echo "📱 Android development tools are ready"
+# Aceptar licencias de Android
+echo "📋 Aceptando licencias de Android..."
+yes | /home/vscode/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
+
+# Instalar componentes de Android
+echo "🛠️ Instalando componentes de Android..."
+/home/vscode/android-sdk/cmdline-tools/latest/bin/sdkmanager "build-tools;34.0.0" "platforms;android-34" "platform-tools"
+
+# Configurar Flutter
+echo "⚙️ Configurando Flutter..."
+/home/vscode/flutter/bin/flutter config --no-analytics
+/home/vscode/flutter/bin/flutter config --enable-web
+/home/vscode/flutter/bin/flutter precache
+
+# Verificar instalación
+echo "✅ Verificando instalación..."
+/home/vscode/flutter/bin/flutter doctor
+
+echo "🎉 ¡Configuración completada! Flutter está listo para Codespaces."
